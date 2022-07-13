@@ -1,0 +1,15 @@
+.inbox-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.chatgif {
+    border-radius: 50%;
+}
+
+.chatspan {
+    color: rgb(248, 205, 125);
+}
