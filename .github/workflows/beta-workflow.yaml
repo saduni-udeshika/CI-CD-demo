@@ -25,8 +25,8 @@ jobs:
       uses: reggionick/s3-deploy@v3
       with:
           folder: build
-          bucket: ${{ secrets.S3_BUCKET }}
-          bucket-region: ${{ secrets.S3_BUCKET_REGION }}
+          bucket: cloudfrontdemobucket2
+          bucket-region: US East (N. Virginia) us-east-1
           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           invalidation: /
     - name: Slack Notification
