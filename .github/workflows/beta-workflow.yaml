@@ -1,0 +1,52 @@
+name: Deploy to Beta Environment
+'on':
+  push:
+    branches: 
+      - "main"
+jobs:
+  Beta-Development:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v3
+    
+    - name: Build Steps
+      run: |
+           npm install
+           npm run build
+    - name: Install dependencies
+    - run: CI=false npm run build 
+
+    - name: AWS Deployment
+      uses: reggionick/s3-deploy@v3
+      with:
+          folder: build
+          bucket: ${{ secrets.S3_BUCKET }}
+          bucket-region: ${{ secrets.S3_BUCKET_REGION }}
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          invalidation: /
+    - name: Slack Notification
+      id: slack
+      uses: slackapi/slack-github-action@v1.19.0
+      with:
+        # Slack channel id, channel name, or user id to post message.
+        channel-id: 'PROJECT_NAME'
+        payload: |
+          {
+            "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}         
