@@ -19,7 +19,6 @@ jobs:
            npm install
            npm run build
     - name: Install dependencies
-    - run: CI=false npm run build 
 
     - name: AWS Deployment
       uses: reggionick/s3-deploy@v3
